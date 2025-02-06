@@ -715,8 +715,19 @@ module.exports = router;
 ```js
 exports.currentUser = async (req, res, next) => {
   try {
-    console.log("current User");
-    res.json({ message: "Hello, current user" });
+    const email = req.user.email;
+    const profile = await db.profile.findFirst({
+      where: {
+        email: email,
+      },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+      },
+    });
+    console.log(profile);
+    res.json({ result: profile });
   } catch (error) {
     next(error);
   }

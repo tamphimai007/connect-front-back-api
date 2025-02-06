@@ -87,14 +87,22 @@ exports.login = async (req, res, next) => {
   }
 };
 
-
 exports.currentUser = async (req, res, next) => {
-    try {
-      console.log(req.user);
-      console.log("current User");
-      res.json({ message: "Hello, current user" });
-    } catch (error) {
-      next(error);
-    }
-  };
-  
+  try {
+    const email = req.user.email;
+    const profile = await db.profile.findFirst({
+      where: {
+        email: email,
+      },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+      },
+    });
+    console.log(profile);
+    res.json({ result: profile });
+  } catch (error) {
+    next(error);
+  }
+};
